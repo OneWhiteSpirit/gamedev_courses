@@ -1,0 +1,14 @@
+language: cpp
+compiler: g++
+sudo: required
+
+install:
+  - sudo apt-get update -y
+  - sudo apt-get install -y libsdl2-dev
+  - sudo apt-get install -y cmake
+
+script:
+  - git clean -df
+  - cmake hello_world/
+  - make
+  - ./hello
