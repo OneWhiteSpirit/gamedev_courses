@@ -28,12 +28,13 @@ install:
     fi
 before_script:
   - export CXX=${COMPILER}
-  - cd ..
 
 script:
   - g++ -v && cmake --version
 
   - git clean -df
+  # Current loc is: /home/travis/build/OneWhiteSpirit/gamedev_courses/deps/cmake/bin/cmake
+  - cd ../../../..
   - cmake hello_world/
   - cmake --build .
   - ./hello
