@@ -4,15 +4,14 @@ sudo: require
 language: cpp
 compiler: gcc
 
-
 addons:
       apt:
          sources:
            - ubuntu-toolchain-r-test
            - sourceline: 'ppa:adrozdoff/cmake'
          packages:
+           - gcc-7
            - g++-7
-           - g++-mingw-w64
            - libsdl2-dev
            - cmake
 
@@ -31,10 +30,10 @@ script:
 
   - git clean -df
   - cmake hello_world/
-  - make
+  - cmake --build .
   - ./hello
 
   - git clean -df
   - cmake hello_libs/
-  - make
+  - cmake --build .
   - ./hello_bins/hello_bins
