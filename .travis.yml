@@ -28,7 +28,7 @@ install:
     fi
 before_script:
   - export CXX=${COMPILER}
-  - cd ../../../
+  - cd ../../
 
 script:
   - g++ -v && cmake --version
