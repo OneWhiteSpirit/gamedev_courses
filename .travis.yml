@@ -1,36 +1,34 @@
-language: cpp
-compiler: g++
-sudo: required
 dist: trusty
-os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-            - g++-mingw-w64
-            - libsdl2-dev
+sudo: require
 
-before_install:
-  - |
-    travis_retry wget \
-      -q https://cmake.org/files/v3.12/cmake-3.12.2-Linux-x86_64.sh
-  sh cmake-3.12.2-Linux-x86_64.sh --skip-license
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+language: cpp
+compiler: gcc
+
+
+addons:
+      apt:
+         sources:
+           - ubuntu-toolchain-r-test
+           - sourceline: 'ppa:adrozdoff/cmake'
+         packages:
+           - g++-7
+           - g++-mingw-w64
+           - libsdl2-dev
+           - cmake
+
+install:
   - sudo apt-get update -qq
 
 script:
-  - |
-    if [ "${COVERITY_SCAN_BRANCH}" = 1 ]; then exit 0 ; fi
-    cd $TRAVIS_BUILD_DIR
-    rm -rf build
-    mkdir build
-    cd build
-    ../bin/cmake -DCMAKE_C_COMPILER=$MYCC -DCMAKE_CXX_COMPILER=$MYCXX \
-      -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX:PATH=/tmp \
-      -DNO_SANITIZERS=True -DFUZZER=$FUZZ -DSPINBIT=$SPIN ..
-    make
+
+  - ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
+  - ln -s /usr/bin/g++-7 /usr/local/bin/g++
+
+  - export CC=/usr/bin/gcc-7
+  - export CXX=/usr/bin/g++-7
+
+  - gcc -v && g++ -v && cmake --version
+
   - git clean -df
   - cmake hello_world/
   - make
