@@ -26,6 +26,9 @@ install:
       mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     fi
+# Current loc is: /home/travis/build/OneWhiteSpirit/gamedev_courses/deps/cmake/bin/cmake
+  - cd ${TRAVIS_BUILD_DIR}/
+
 before_script:
   - export CXX=${COMPILER}
 
@@ -33,8 +36,6 @@ script:
   - g++ -v && cmake --version
 
   - git clean -df
-  # Current loc is: /home/travis/build/OneWhiteSpirit/gamedev_courses/deps/cmake/bin/cmake
-  - cd ../../../..
   - cmake hello_world/
   - cmake --build .
   - ./hello
