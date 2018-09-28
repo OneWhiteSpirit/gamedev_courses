@@ -10,7 +10,7 @@ compiler: gcc
 env: COMPILER='g++-7' BUILD_TYPE='Debug'
 
 before_install:
-  - sudo add-apt-repository --yes ppa:zoogie/sdl2-snapshots
+  - sudo add-apt-repository -y ppa:zoogie/sdl2-snapshots
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
 
@@ -33,7 +33,6 @@ install:
 
 before_script:
   - export CXX=${COMPILER}
-  - sudo apt
 
 script:
   - g++ -v && cmake --version
