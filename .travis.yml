@@ -1,25 +1,23 @@
 dist: trusty
-#sudo: require
-sudo: false
+sudo: require
+#sudo: false
 
 language: cpp
 
 os: linux
 compiler: gcc
 
-addons:
-      apt:
-         sources:
-           - ubuntu-toolchain-r-test
-         packages:
-           #- gcc-7
-           - g++-7
-           - libsdl2-dev
-
 env: COMPILER='g++-7' BUILD_TYPE='Debug'
 
+before_install:
+  - sudo add-apt-repository --yes ppa:zoogie/sdl2-snapshots
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
 install:
-   - sudo apt-get update -qq
+  - sudo apt-get install -qq g++-7
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
+  - sudo apt-get install -qq libsdl2-dev
 #  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
 #  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
 #  - |
@@ -35,6 +33,7 @@ install:
 
 before_script:
   - export CXX=${COMPILER}
+  - sudo apt
 
 script:
   - g++ -v && cmake --version
@@ -54,8 +53,3 @@ script:
   - cmake ${TRAVIS_BUILD_DIR}/sdl-dynamic-linking/
   - cmake --build .
   - ./sdl-dynamic-linking
-
-  - git clean -df
-  - cmake ${TRAVIS_BUILD_DIR}/sdl-static-linking/
-  - cmake --build .
-  - ./sdl-static-linking
