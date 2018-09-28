@@ -4,13 +4,12 @@ project(sdl-loop)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdl_for_builds/include)
-
-find_library(SDL2_LIB libSDL2-2.0.so ${CMAKE_CURRENT_SOURCE_DIR}/../sdl_for_builds/libs)
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIB})
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin
