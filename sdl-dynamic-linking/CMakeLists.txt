@@ -4,7 +4,9 @@ project(sdl-dynamic-linking)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_library(SDL2_LIB NAMES libSDL2.so)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/../sdl_for_builds/include)
+
+find_library(SDL2_LIB libSDL2-2.0.so.0 ${CMAKE_CURRENT_LIST_DIR}/../sdl_for_builds/libs)
 
 add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
