@@ -27,8 +27,10 @@ install:
   #    export PATH=${DEPS_DIR}/cmake/bin:${PATH}
   #  fi
 # Current loc is: /home/travis/build/OneWhiteSpirit/gamedev_courses/deps/cmake/bin/cmake
-  #- cd ${TRAVIS_BUILD_DIR}/
-  - ./cmake.sh
+  - cd ${DEPS_DIR}/
+  - cd ..
+  - ls
+  #- ./cmake.sh
 
 before_script:
   - export CXX=${COMPILER}
