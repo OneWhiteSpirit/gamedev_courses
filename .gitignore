@@ -2,3 +2,4 @@
 *.out
 CMakeLists.txt.save
 CMakeLists.txt.user
+#cmake.sh#
