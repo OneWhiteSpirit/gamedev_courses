@@ -4,15 +4,18 @@ project(sdl-engine)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+find_package(SDL2 REQUIRED)
 
-find_library(SDL2_LIB libSDL2-2.0.so ${CMAKE_CURRENT_SOURCE_DIR}/libs)
+include_directories(${SDL2_INCLUDE_DIRS})
 
-add_executable(${PROJECT_NAME} "main.cpp")
+add_executable(${PROJECT_NAME} "src/main.cpp" "src/engine.cpp" "include/engine.hpp")
 
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIB})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/)
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin
         LIBRARY DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin
         ARCHIVE DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin)
+
+
