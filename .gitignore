@@ -3,3 +3,5 @@
 CMakeLists.txt.save
 CMakeLists.txt.user
 #cmake.sh#
+build/
+test/

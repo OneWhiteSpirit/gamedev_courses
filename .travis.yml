@@ -14,23 +14,24 @@ addons:
          packages:
            #- gcc-7
            - g++-7
-           #- libsdl2-dev
+           - libsdl2-dev
 
 env: COMPILER='g++-7' BUILD_TYPE='Debug'
 
 install:
-  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
-  - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      CMAKE_URL="https://cmake.org/files/v3.12/cmake-3.12.2-Linux-x86_64.tar.gz"
-      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
-      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
-      #sudo ln -s ${DEPS_DIR}/cmake/bin/cmake /usr/local/bin/cmake
-    fi
+   - sudo apt-get update -qq
+#  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+#  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+#  - |
+#    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+#      CMAKE_URL="https://cmake.org/files/v3.12/cmake-3.12.2-Linux-x86_64.tar.gz"
+#      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+#      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+#      #sudo ln -s ${DEPS_DIR}/cmake/bin/cmake /usr/local/bin/cmake
+#    fi
 # Current loc is: /home/travis/build/OneWhiteSpirit/gamedev_courses/deps/cmake/bin/cmake
-  - cd ${TRAVIS_BUILD_DIR}/
-  - pwd
+#  - cd ${TRAVIS_BUILD_DIR}/
+#  - pwd
 
 before_script:
   - export CXX=${COMPILER}
@@ -53,3 +54,8 @@ script:
   - cmake ${TRAVIS_BUILD_DIR}/sdl-dynamic-linking/
   - cmake --build .
   - ./sdl-dynamic-linking
+
+  - git clean -df
+  - cmake ${TRAVIS_BUILD_DIR}/sdl-static-linking/
+  - cmake --build .
+  - ./sdl-static-linking
