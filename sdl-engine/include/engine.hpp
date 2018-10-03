@@ -2,28 +2,28 @@
 #include <string>
 #include <string_view>
 
-namespace om
+namespace my_engine_ns
 {
 /// dendy gamepad emulation events
 enum class event
 {
     /// input events
     left_pressed,
-    left_released,
+
     right_pressed,
-    right_released,
+
     up_pressed,
-    up_released,
+
     down_pressed,
-    down_released,
+
     select_pressed,
-    select_released,
+
     start_pressed,
-    start_released,
+
     button1_pressed,
-    button1_released,
+
     button2_pressed,
-    button2_released,
+
     /// virtual console events
     turn_off
 };
@@ -45,8 +45,8 @@ public:
     virtual std::string initialize(std::string_view config) = 0;
     /// pool event from input queue
     /// return true if event was written
-    virtual bool read_input(event& e) = 0;
+    virtual bool read_input(event& e, int& x, int& y) = 0;
     virtual void uninitialize()       = 0;
 };
 
-} // end namespace om
+} // end namespace my_engine_ns

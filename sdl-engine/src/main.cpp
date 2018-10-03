@@ -7,10 +7,10 @@
 
 #include "engine.hpp"
 
-int main(int /*argc*/, char* /*argv*/ [])
+int main()
 {
-    std::unique_ptr<om::engine, void (*)(om::engine*)> engine(
-        om::create_engine(), om::destroy_engine);
+    std::unique_ptr<my_engine_ns::engine, void (*)(my_engine_ns::engine*)> engine(
+        my_engine_ns::create_engine(), my_engine_ns::destroy_engine);
 
     std::string err = engine->initialize("");
     if (!err.empty())
@@ -19,17 +19,21 @@ int main(int /*argc*/, char* /*argv*/ [])
         return EXIT_FAILURE;
     }
 
+    //pic start position
+    int x = 300;
+    int y = 205;
+
     bool continue_loop = true;
     while (continue_loop)
     {
-        om::event event;
+        my_engine_ns::event event;
 
-        while (engine->read_input(event))
+        while (engine->read_input(event, x, y))
         {
             std::cout << event << std::endl;
             switch (event)
             {
-                case om::event::turn_off:
+                case my_engine_ns::event::turn_off:
                     continue_loop = false;
                     break;
                 default:
