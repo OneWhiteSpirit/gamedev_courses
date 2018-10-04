@@ -11,14 +11,26 @@ int main()
     const color violet = { 238, 130, 238};
 
     basic_render render(image_width, image_height);
+    //basic_render render1(image_width, image_height);
 
     render.clear(white);
+    //render1.clear(white);
 
-    for(size_t i = 0; i < 1000; i++)
-    {
-        point rand_point = { rand() % image_width, rand() % image_height };
-        render.set_pixel_color(rand_point, violet);
-    }
+    point rand_point1(0,0);
+    point rand_point2(100,100);
+    point rand_point3(180,50);
+    point rand_point4(20,50);
+    point rand_point5(10,150);
+
+    //render.draw_line(rand_point1, rand_point2, violet);
+    //render.draw_line(rand_point1, rand_point3, green);
+    render.draw_triangle(rand_point2, rand_point3, rand_point4, green);
+
+    render.draw_triangle(rand_point1, rand_point4, rand_point5, violet);
+
+    points temp = render.get_triangel_points(rand_point1, rand_point4, rand_point5);
+
+    render.fill_figure(temp, green);
 
     render.save_to_image("test_image.ppm");
 

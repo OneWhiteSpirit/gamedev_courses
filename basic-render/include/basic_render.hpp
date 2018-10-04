@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 #include <fstream>
 #include <algorithm>
 
@@ -20,10 +21,13 @@ struct color
 
 struct point
 {
+    point() = default;
     point(size_t x_, size_t y_);
     size_t x = 0;
     size_t y = 0;
 };
+
+using points = std::vector<point>;
 
 struct line
 {
@@ -44,8 +48,11 @@ class basic_render
 {
 public:
     basic_render(size_t width_, size_t height_);
-    void draw_line(point start, point end, color);
-    void set_pixel_color(point current_point, color);
+    void draw_line(point start, point end, color col);
+    void draw_triangle(point first, point second, point third, color col);
+    void set_pixel_color(point current_point, color col);
+    points get_triangel_points(point first, point second, point third);
+    void fill_figure(points& figure_points, color col);
     void save_to_image(const std::string& file_name);
     void clear(color);
 
