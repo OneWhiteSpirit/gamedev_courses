@@ -8,10 +8,24 @@ before_script:
     - apt-get update -qq && apt-get install -y -qq cmake gcc-7 g++-7 libsdl2-dev
     - g++ --version && cmake --version
 
-myapp:
+hello_world:
     stage: build
     script:
-        - git clean -df
-        - cmake hello_world/
+        - mkdir build/
+        - cd build/
+        - cmake ../hello_world/
         - cmake --build .
         - ./hello
+        - cd ..
+        - rm -rf build/
+
+hello_libs:
+    stage: build
+    script:
+        - mkdir build/
+        - cd build/
+        - cmake ../hello_libs/
+        - cmake --build .
+        - ./hello_bins/hello_bins
+        - cd ..
+        - rm -rf build/
