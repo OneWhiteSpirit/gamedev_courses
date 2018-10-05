@@ -6,10 +6,45 @@ point::point(size_t x_, size_t y_)
 {
 }
 
+point point::operator-(const point& point1)
+{
+    return point(x - point1.x, y - point1.y);
+}
+
 line::line(point start_, point end_)
     : start(start_)
     , end(end_)
 {
+}
+
+size_t line::delta_x()
+{
+    return end.x - start.x;
+}
+
+size_t line::delta_y()
+{
+    return end.y - start.y;
+}
+
+size_t line::get_start_x()
+{
+    return start.x;
+}
+
+size_t line::get_start_y()
+{
+    return start.y;
+}
+
+size_t line::get_end_x()
+{
+    return end.x;
+}
+
+size_t line::get_end_y()
+{
+    return end.y;
 }
 
 triangle::triangle(point first_, point second_, point third_)
@@ -19,73 +54,10 @@ triangle::triangle(point first_, point second_, point third_)
 {
 }
 
-basic_render::basic_render(size_t width_, size_t height_)
-    : width(width_)
-    , height(height_)
-{
-}
-
-void basic_render::draw_line(point start, point end, color col)
-{
-    int A, B, sign;
-    A = end.y - start.y;
-    B = start.x - end.x;
-    if (abs(A) > abs(B))
-        sign = 1;
-    else
-        sign = -1;
-    int signa, signb;
-    if (A < 0)
-        signa = -1;
-    else
-        signa = 1;
-    if (B < 0)
-        signb = -1;
-    else
-        signb = 1;
-    int f = 0;
-    int x = start.x, y = start.y;
-    if (sign == -1) {
-        do {
-            f += A * signa;
-            if (f > 0) {
-                f -= B * signb;
-                y += signa;
-            }
-            x -= signb;
-
-            set_pixel_color(point(x,y), col);
-        } while (x != end.x || y != end.y);
-    } else {
-        do {
-            f += B * signb;
-            if (f > 0) {
-                f -= A * signa;
-                x -= signb;
-            }
-            y += signa;
-
-            set_pixel_color(point(x,y), col);
-        } while (x != end.x || y != end.y);
-    }
-}
-
-void basic_render::draw_triangle(point first, point second, point third, color col)
-{
-    draw_line(first, second, col);
-    draw_line(second, third, col);
-    draw_line(third, first, col);
-}
-
-void basic_render::set_pixel_color(point current_point, color col)
-{
-    buffer.at(current_point.y * image_width + current_point.x) = col;
-}
-
-points basic_render::get_triangel_points(point first, point second, point third)
+points triangle::get_triangel_points()
 {
     points current_triangel;
-    std::vector<std::pair<point,point>> points_pair;
+    std::vector<std::pair<point, point>> points_pair;
     points_pair.reserve(3);
     points_pair.push_back(std::make_pair(first, second));
     points_pair.push_back(std::make_pair(second, third));
@@ -97,7 +69,7 @@ points basic_render::get_triangel_points(point first, point second, point third)
         int x1 = elem.second.x;
         int y1 = elem.second.y;
 
-        auto get_line = [&current_triangel, &x0, &y0, &x1, &y1]() {
+        auto get_line = [&current_triangel](int x0, int y0, int x1, int y1) {
             int A, B, sign;
             A = y1 - y0;
             B = x0 - x1;
@@ -139,26 +111,91 @@ points basic_render::get_triangel_points(point first, point second, point third)
                 } while (x != x1 || y != y1);
             }
         };
-        get_line();
+        get_line(x0, y0, x1, y1);
     }
 
     current_triangel.shrink_to_fit();
 
     points_pair.size();
 
-    std::sort (current_triangel.begin(), current_triangel.end(), [](const point& i, const point& j){
+    std::sort(current_triangel.begin(), current_triangel.end(), [](const point& i, const point& j) {
         return (i.y < j.y);
     });
 
     return current_triangel;
 }
 
-void basic_render::fill_figure(points &figure_points, color col)
+basic_render::basic_render(size_t width_, size_t height_)
+    : width(width_)
+    , height(height_)
 {
-    for(auto start = figure_points.begin(); start != figure_points.end(); start++)
-    {
-        if(start->y == (start + 1)->y)
-            draw_line(*start, *(start + 1) , col);
+}
+
+void basic_render::draw_line(line line, color col)
+{
+    int A, B, sign;
+    A = line.delta_y();
+    B = -line.delta_x();
+    if (abs(A) > abs(B))
+        sign = 1;
+    else
+        sign = -1;
+    int signa, signb;
+    if (A < 0)
+        signa = -1;
+    else
+        signa = 1;
+    if (B < 0)
+        signb = -1;
+    else
+        signb = 1;
+    int f = 0;
+    int x = line.get_start_x(), y = line.get_start_y();
+    if (sign == -1) {
+        do {
+            f += A * signa;
+            if (f > 0) {
+                f -= B * signb;
+                y += signa;
+            }
+            x -= signb;
+
+            set_pixel_color(point(x, y), col);
+        } while (x != line.get_end_x() || y != line.get_end_y());
+    } else {
+        do {
+            f += B * signb;
+            if (f > 0) {
+                f -= A * signa;
+                x -= signb;
+            }
+            y += signa;
+
+            set_pixel_color(point(x, y), col);
+        } while (x != line.get_end_x() || y != line.get_end_y());
+    }
+}
+
+void basic_render::draw_triangle(triangle& triangle, color col)
+{
+    points triangle_points = triangle.get_triangel_points();
+
+    for (auto elem : triangle_points) {
+        set_pixel_color(elem, col);
+    }
+}
+
+void basic_render::set_pixel_color(point current_point, color col)
+{
+    buffer.at(current_point.y * image_width + current_point.x) = col;
+}
+
+void basic_render::fill_triangel(triangle triangle, color col)
+{
+    points triangle_points = triangle.get_triangel_points();
+    for (auto start = triangle_points.begin(); start != triangle_points.end(); start++) {
+        if (start->y == (start + 1)->y)
+            draw_line(line(*start, *(start + 1)), col);
     }
 }
 

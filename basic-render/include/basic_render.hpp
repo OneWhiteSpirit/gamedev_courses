@@ -1,58 +1,65 @@
 #pragma once
 
-#include <array>
-#include <vector>
-#include <fstream>
 #include <algorithm>
+#include <array>
+#include <fstream>
+#include <vector>
 
-constexpr size_t image_width = 200;
-constexpr size_t image_height = 200;
+constexpr size_t image_width = 1366;
+constexpr size_t image_height = 768;
 
 const size_t image_render_size = image_width * image_height;
 
 #pragma pack(push, 1)
-struct color
-{
+struct color {
     uint8_t red;
     uint8_t green;
     uint8_t blue;
 };
 #pragma pack(pop)
 
-struct point
-{
+struct point {
     point() = default;
     point(size_t x_, size_t y_);
     size_t x = 0;
     size_t y = 0;
+
+    point operator-(const point& point1);
 };
 
 using points = std::vector<point>;
 
-struct line
-{
+struct line {
     line(point start_, point end_);
-    point start = {0, 0};
-    point end = {0, 0};
+    size_t delta_x();
+    size_t delta_y();
+    size_t get_start_x();
+    size_t get_start_y();
+    size_t get_end_x();
+    size_t get_end_y();
+
+private:
+    point start = { 0, 0 };
+    point end = { 0, 0 };
 };
 
-struct triangle
-{
+struct triangle {
     triangle(point first_, point second_, point third_);
-    point first = {0, 0};
-    point second = {0, 0};
-    point third = {0, 0};
+    points get_triangel_points();
+
+private:
+    point first = { 0, 0 };
+    point second = { 0, 0 };
+    point third = { 0, 0 };
 };
 
-class basic_render
-{
+class basic_render {
 public:
     basic_render(size_t width_, size_t height_);
-    void draw_line(point start, point end, color col);
-    void draw_triangle(point first, point second, point third, color col);
+    void draw_line(line line, color col);
+    void draw_triangle(triangle& triangle, color col);
     void set_pixel_color(point current_point, color col);
-    points get_triangel_points(point first, point second, point third);
-    void fill_figure(points& figure_points, color col);
+    void fill_triangel(triangle triangle, color col);
     void save_to_image(const std::string& file_name);
     void clear(color);
 

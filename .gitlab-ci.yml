@@ -59,7 +59,7 @@ sdl-loop:
         - cd build/
         - cmake ../sdl-loop/
         - cmake --build .
-        - ./sdl-loop
+        #- ./sdl-loop
         - cd ..
         - rm -rf build/
 
