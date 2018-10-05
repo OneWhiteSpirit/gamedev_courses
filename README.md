@@ -2,5 +2,4 @@
 
 Build Platform   | Status (tests only)
 ---------------- | ----------------------
-Linux            | ![Linux]()
-
+Linux            | ![Linux](https://gitlab.com/OneWhiteSpirit/gamedev_courses/badges/master/build.svg)

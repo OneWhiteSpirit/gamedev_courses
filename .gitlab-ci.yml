@@ -19,6 +19,9 @@ hello_world:
         - cd ..
         - rm -rf build/
 
+hello_libs:
+    stage: build
+    script:
         - mkdir build/
         - cd build/
         - cmake ../hello_libs/
@@ -27,10 +30,46 @@ hello_world:
         - cd ..
         - rm -rf build/
 
+sdl-dynamic-linking:
+    stage: build
+    script:
         - mkdir build/
         - cd build/
         - cmake ../sdl-dynamic-linking/
         - cmake --build .
         - ./sdl-dynamic-linking
+        - cd ..
+        - rm -rf build/
+
+sdl-static-linking:
+    stage: build
+    script:
+        - mkdir build/
+        - cd build/
+        - cmake ../sdl-static-linking/
+        - cmake --build .
+        - ./sdl-static-linking
+        - cd ..
+        - rm -rf build/
+
+sdl-loop:
+    stage: build
+    script:
+        - mkdir build/
+        - cd build/
+        - cmake ../sdl-loop/
+        - cmake --build .
+        - ./sdl-loop
+        - cd ..
+        - rm -rf build/
+
+basic-render:
+    stage: build
+    script:
+        - mkdir build/
+        - cd build/
+        - cmake ../basic-render/
+        - cmake --build .
+        - ./basic-render
         - cd ..
         - rm -rf build/
