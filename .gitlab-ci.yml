@@ -19,13 +19,18 @@ hello_world:
         - cd ..
         - rm -rf build/
 
-hello_libs:
-    stage: build
-    script:
         - mkdir build/
         - cd build/
         - cmake ../hello_libs/
         - cmake --build .
         - ./hello_bins/hello_bins
+        - cd ..
+        - rm -rf build/
+
+        - mkdir build/
+        - cd build/
+        - cmake ../sdl-dynamic-linking/
+        - cmake --build .
+        - ./sdl-dynamic-linking
         - cd ..
         - rm -rf build/
