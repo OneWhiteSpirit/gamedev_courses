@@ -57,7 +57,7 @@ render::render()
 void render::render_triangle(const triangle& t)
 {
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(point),
-                          &t.triangle_points[0]);
+        &t.triangle_points[0]);
 
     glEnableVertexAttribArray(0);
 

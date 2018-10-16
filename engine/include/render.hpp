@@ -30,5 +30,6 @@ class render {
 public:
     render();
     void render_triangle(const triangle& t);
+
 private:
 };

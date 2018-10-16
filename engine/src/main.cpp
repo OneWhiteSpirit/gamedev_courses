@@ -1,8 +1,8 @@
-#include "window.hpp"
 #include "render.hpp"
+#include "window.hpp"
+#include <cassert>
 #include <cstdlib>
 #include <fstream>
-#include <cassert>
 
 int main()
 {
@@ -13,8 +13,7 @@ int main()
     window game_window("some title", 640, 480);
     render r;
 
-    while(!game_window.closed())
-    {
+    while (!game_window.closed()) {
         game_window.clear();
 
         std::ifstream file("vertexes.txt");
