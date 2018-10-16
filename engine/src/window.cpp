@@ -59,11 +59,6 @@ namespace graphics {
 
     bool window::init()
     {
-        uint32_t v_shader_;
-        uint32_t f_shader_;
-        uint32_t program_;
-        uint32_t vao_;
-
         SDL_version compiled = { 0, 0, 0 };
         SDL_version linked = { 0, 0, 0 };
 
@@ -84,7 +79,7 @@ namespace graphics {
         }
 
         sdl_window = SDL_CreateWindow(
-            title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height,
+            title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<int>(width), static_cast<int>(height),
             ::SDL_WINDOW_OPENGL);
 
         if (sdl_window == nullptr) {
