@@ -6,9 +6,11 @@ find_library(SDL2_LIB NAMES SDL2)
 
 include_directories(${SDL2_INCLUDE_DIRS})
 
-add_executable(${PROJECT_NAME} "src/main.cpp" "src/window.cpp" "src/render.cpp" "include/window.hpp" "include/render.hpp")
+add_executable(${PROJECT_NAME} "src/main.cpp" "src/graphics/window.cpp"
+                               "src/graphics/render.cpp" "include/graphics/window.hpp"
+                               "include/graphics/render.hpp")
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/graphics)
 
 if (MINGW)
     target_link_libraries(${PROJECT_NAME}

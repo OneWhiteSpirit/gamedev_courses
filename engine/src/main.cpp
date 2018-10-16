@@ -10,11 +10,12 @@ int main()
     using namespace one_dc;
     using namespace graphics;
 
-    window game_window("some title", 640, 480);
-    render r;
+    window game_win("some title", 640, 480);
+    render rend(game_win.get_sdl_window());
 
-    while (!game_window.closed()) {
-        game_window.clear();
+    while (!game_win.closed()) {
+
+        rend.clear();
 
         std::ifstream file("vertexes.txt");
         assert(!!file);
@@ -22,9 +23,9 @@ int main()
         triangle tr;
         file >> tr;
 
-        r.render_triangle(tr);
+        rend.render_triangle(tr);
 
-        game_window.update();
+        game_win.update();
     }
 
     return EXIT_SUCCESS;

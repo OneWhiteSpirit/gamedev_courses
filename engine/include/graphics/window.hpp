@@ -1,5 +1,7 @@
 #pragma once
 
+#include "render.hpp"
+
 #include <iostream>
 
 struct SDL_Window;
@@ -12,10 +14,11 @@ namespace graphics {
         window(const char* title_, std::size_t width_, std::size_t height_);
         ~window();
 
-        void clear() const;
         void update() const;
         void swap_buffer() const;
         bool closed() const;
+
+        SDL_Window* get_sdl_window() const;
 
     private:
         const char* title;
