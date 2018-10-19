@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-project(engine)
+project(vertex-morhning)
 
 find_library(SDL2_LIB NAMES SDL2)
 
