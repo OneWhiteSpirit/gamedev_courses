@@ -1,6 +1,13 @@
 #include "window.hpp"
+#include "error.hpp"
 
+#include <iostream>
+#include <cassert>
+
+#include <GL/glew.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+
 
 namespace one_dc {
 
@@ -8,23 +15,17 @@ using std::cerr;
 using std::endl;
 
 namespace graphics {
-    window::window(const char* title_, size_t width_, size_t height_)
+    window::window()
     {
-        title = title_;
-        width = width_;
-        height = height_;
-
-        if (!window::init())
-            SDL_Quit();
     }
 
     window::~window()
     {
-        SDL_DestroyWindow(sdl_window);
+        SDL_DestroyWindow(_sdl_window);
         SDL_Quit();
     }
 
-    bool window::init()
+    bool window::init(const char* _title, std::size_t _width, std::size_t _height)
     {
         SDL_version compiled = { 0, 0, 0 };
         SDL_version linked = { 0, 0, 0 };
@@ -45,30 +46,66 @@ namespace graphics {
             return false;
         }
 
-        sdl_window = SDL_CreateWindow(
-            title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<int>(width), static_cast<int>(height),
+        _sdl_window = SDL_CreateWindow(
+            _title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<int>(_width), static_cast<int>(_height),
             ::SDL_WINDOW_OPENGL);
 
-        if (sdl_window == nullptr) {
+        if (_sdl_window == nullptr) {
             const char* err_message = SDL_GetError();
             cerr << "Failed to create SDL window: " << err_message << endl;
             return false;
         }
 
+        gl_context = SDL_GL_CreateContext(_sdl_window);
+        if (gl_context == nullptr) {
+            std::string msg("Failed to create opengl context: ");
+            msg += SDL_GetError();
+            cerr << msg << endl;
+            return false;
+        }
+
+        int gl_major_ver = 0;
+        int result = SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_major_ver);
+        assert(result == 0);
+        int gl_minor_ver = 0;
+        result = SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &gl_minor_ver);
+        assert(result == 0);
+
+        if (gl_major_ver <= 2 && gl_minor_ver < 1) {
+            cerr << "current context opengl version: " << gl_major_ver << '.'
+                 << gl_minor_ver << '\n'
+                 << "need opengl version at least: 2.1\n"
+                 << std::flush;
+            return false;
+        }
+
+        if (glewInit() != GLEW_OK) {
+            const char* err_message = SDL_GetError();
+            cerr << "Failed to initialize GLEW: " << err_message << endl;
+            return false;
+        }
+        ONE_DC_GL_CHECK();
+
+        std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+
+        glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
+        ONE_DC_GL_CHECK();
+
+        //Set VSYNC
+        SDL_GL_SetSwapInterval(1);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         return true;
     }
 
-    void window::update() const
+    void window::update()
     {
-        swap_buffer();
+        SDL_GL_SwapWindow(_sdl_window);
     }
 
-    void window::swap_buffer() const
-    {
-        SDL_GL_SwapWindow(sdl_window);
-    }
-
-    bool window::closed() const
+    bool window::closed()
     {
         SDL_Event event;
         if (SDL_PollEvent(&event)) {
@@ -80,12 +117,12 @@ namespace graphics {
         return false;
     }
 
-    SDL_Window* window::get_sdl_window() const
+    SDL_Window* window::get_sdl_window()
     {
-        return sdl_window;
+        return _sdl_window;
     }
 
-    float window::get_time_from_init() const
+    float window::get_time_from_init()
     {
         std::uint32_t ms_from_library_initialization = SDL_GetTicks();
         float seconds = ms_from_library_initialization * 0.001f;

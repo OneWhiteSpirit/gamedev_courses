@@ -6,12 +6,15 @@ find_library(SDL2_LIB NAMES SDL2)
 
 include_directories(${SDL2_INCLUDE_DIRS})
 
-add_executable(${PROJECT_NAME} "src/main.cpp" "src/graphics/window.cpp"
-                               "src/graphics/render.cpp" "include/graphics/window.hpp"
-                               "include/graphics/render.hpp" "include/math_2d/math_2d.hpp")
+file(GLOB SOME_PARAM "src/*.cpp" "src/graphics/*.cpp" "game/src/*.cpp")
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/graphics
-                                                  ${CMAKE_SOURCE_DIR}/include/math_2d)
+add_executable(${PROJECT_NAME} "main.cpp" "game.cpp" ${SOME_PARAM})
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/
+                                                  ${CMAKE_SOURCE_DIR}/include/graphics
+                                                  ${CMAKE_SOURCE_DIR}/game/include
+                                                  )
+
 
 if (MINGW)
     target_link_libraries(${PROJECT_NAME}
@@ -19,7 +22,9 @@ if (MINGW)
                -lSDL2main
                -lSDL2
                -mwindows
-               -lopengl32
+               -lopengl32               
+               -lGL
+               -lGLEW
                )
 elseif(UNIX)
     target_link_libraries(${PROJECT_NAME}

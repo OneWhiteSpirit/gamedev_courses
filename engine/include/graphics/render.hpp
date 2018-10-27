@@ -50,8 +50,10 @@ namespace graphics {
 
     class render {
     public:
-        render(SDL_Window* window);
-        void render_object() const;
+        render();
+        ~render();
+        bool init(SDL_Window* window);
+        void render_object();
         void render_triangle(const triangle& t);
         void render_circle(const circle& c);
         //Clear screen color
@@ -61,11 +63,6 @@ namespace graphics {
 
     private:
         void* gl_context;
-        GLuint program_id;
-        //GLuint vertex_buffer;
-        //GLuint vertex_array_id;
-
-        GLuint do_shaders(const char* vertex_shader_string, const char* fragment_shader_string);
-    };
+        };
 }
 }
