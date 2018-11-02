@@ -12,20 +12,21 @@ game::game()
     , _screen_width(640)
     , _screen_height(360)
 {
+
 }
 
 game::~game()
 {
     for (size_t i = 0; i < _levels.size(); i++) {
         delete _levels[i];
-    }
+    }    
 }
 
 void game::start()
 {
-    init_engine();
+    init_engine();    
 
-    init_level();
+    init_level();    
 
     while (_game_state != game_state::EXIT) {
 
@@ -60,7 +61,7 @@ void game::init_engine()
 
     _sprite_batch.init();
 
-    _camera.init(_screen_width / 2, _screen_height / 2);
+    _camera.init(static_cast<int>(_screen_width / 2), static_cast<int>(_screen_height / 2));
 }
 
 void game::init_shaders()
@@ -108,17 +109,6 @@ void game::draw_game()
     ONE_DC_GL_CHECK();
 
     _levels[_current_level]->draw();
-    //    _sprite_batch.begin();
-    //    glm::vec4 pos(-0.5f, -0.5f, 0.5f, 0.5f);
-    //    glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
-    //    static gl_texture texture = resource_manager::get_texture("dinosaur.png");
-    //    color col;
-    //    col.set_color(200, 200, 200, 200);
-    //    _sprite_batch.draw(pos, uv, texture.id, 0.0f, col);
-    //    _sprite_batch.draw(pos + glm::vec4(0.5, 0, 0, 0), uv, texture.id, 0.0f, col);
-    //    _sprite_batch.end();
-
-    //    _sprite_batch.render_batch();
 
     _sprite_batch.begin();
     _player->draw(_sprite_batch);
@@ -156,17 +146,10 @@ void game::handle_input()
             break;
         }
     }
-
-    if (_input_manager.is_key_pressed(SDLK_w)) {
-    } else if (_input_manager.is_key_pressed(SDL_BUTTON_LEFT)) {
-        glm::vec2 mouse_coord = _input_manager.get_mouse_coordinates();
-        std::cout << mouse_coord.x << ' ' << mouse_coord.y << std::endl;
-    }
 }
 
 void game::calculateFPS()
 {
-
     static const int NUM_SAMPLES = 10;
     static float frame_times[NUM_SAMPLES];
     static int current_frame;

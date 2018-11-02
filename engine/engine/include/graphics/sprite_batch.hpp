@@ -36,6 +36,28 @@ public:
     GLuint texture;
 };
 
+//class sprite_data {
+//public:
+//    sprite_data() {}
+//    sprite_data(int frame_count, double frame_duration, int left, int bottom, int width, int height, bool loop, std::string atlas)
+//        : frameCount(frame_count)
+//        , frameDuration(frame_duration)
+//        , left(left)
+//        , bottom(bottom)
+//        , width(width)
+//        , height(height)
+//        , shouldLoop(loop)
+//        , atlas(atlas)
+//    {
+//    }
+//    int frameCount;
+//    double frameDuration;
+//    int left, bottom, width, height;
+//    bool shouldLoop;
+//    std::string atlas;
+//    GLuint texture;
+//};
+
 class sprite_batch {
 public:
     sprite_batch();

@@ -29,7 +29,8 @@ void game_object::collision_with_level(const std::vector<std::string>& level_dat
 
 void game_object::draw(sprite_batch& sprite_batch)
 {
-    static GLuint texture_id = resource_manager::get_texture("dinosaur.png").id;
+    static GLuint texture_id0 = resource_manager::get_texture("resources/floor.png").id;
+    static GLuint texture_id1 = resource_manager::get_texture("resources/floor_water.png").id;
 
     const glm::vec4 uv_rect(0.0f, 0.0f, 1.0f, 1.0f);
 
@@ -39,7 +40,8 @@ void game_object::draw(sprite_batch& sprite_batch)
     dest_rect.z = OBJECT_WIDTH;
     dest_rect.w = OBJECT_WIDTH;
 
-    sprite_batch.draw(dest_rect, uv_rect, texture_id, 0.0f, _color);
+    sprite_batch.draw(dest_rect, uv_rect, texture_id0, 0.0f, _color);
+    sprite_batch.draw(dest_rect, uv_rect, texture_id1, 0.0f, _color);
 }
 
 void game_object::check_tile_pos(const std::vector<std::string>& level_data, std::vector<glm::vec2>& collision_tile_pos, float x, float y)

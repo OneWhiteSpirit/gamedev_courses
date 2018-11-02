@@ -3,15 +3,16 @@ cmake_minimum_required(VERSION 3.9)
 project(engine)
 
 find_library(SDL2_LIB NAMES SDL2)
+find_library(SDL2_MIXER NAMES SDL2_mixer)
 
-include_directories(${SDL2_INCLUDE_DIRS})
+include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS})
 
-file(GLOB SOME_PARAM "src/*.cpp" "src/graphics/*.cpp" "game/src/*.cpp")
+file(GLOB SOME_PARAM "engine/src/*.cpp" "engine/src/graphics/*.cpp" "game/src/*.cpp")
 
 add_executable(${PROJECT_NAME} "main.cpp" "game.cpp" ${SOME_PARAM})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/
-                                                  ${CMAKE_SOURCE_DIR}/include/graphics
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/engine/include/
+                                                  ${CMAKE_SOURCE_DIR}/engine/include/graphics
                                                   ${CMAKE_SOURCE_DIR}/game/include
                                                   )
 
@@ -31,6 +32,7 @@ elseif(UNIX)
                -lSDL2
                -lGL
                -lGLEW
+               ${SDL2_MIXER}
                )
 endif()
 

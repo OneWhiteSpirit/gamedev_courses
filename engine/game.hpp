@@ -7,6 +7,7 @@
 #include "level.hpp"
 #include "player.hpp"
 #include "camera2d.hpp"
+#include "audio.hpp"
 
 #include <vector>
 
@@ -38,10 +39,12 @@ private:
     size_t _current_level;
     player* _player;
     camera2d _camera;
+    audio* audio_;
 
     void init_engine();
     void init_shaders();
     void init_level();
+    void init_audio();
 
     void draw_game();
     void handle_input();

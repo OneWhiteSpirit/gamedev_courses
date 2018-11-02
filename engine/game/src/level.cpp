@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 level::level(const std::string& file_name)
 {
@@ -19,6 +20,8 @@ level::level(const std::string& file_name)
     while (std::getline(file, tmp)) {
         _level_data.push_back(tmp);
     }
+
+    std::reverse(_level_data.begin(), _level_data.end());
 
     _sprite_batch.init();
     _sprite_batch.begin();
@@ -44,7 +47,7 @@ level::level(const std::string& file_name)
                 _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/acid.png").id, 0.0f, col);
                 break;
             case '@':
-                _level_data[i][j] = '.';
+                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/acid.png").id, 0.0f, col);
                 _start_player_pos.x = static_cast<int>(j * TILE_WIDTH);
                 _start_player_pos.y = static_cast<int>(i * TILE_WIDTH);
                 break;
