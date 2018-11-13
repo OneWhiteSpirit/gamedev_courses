@@ -11,7 +11,6 @@ sprite_batch::sprite_batch()
 
 sprite_batch::~sprite_batch()
 {
-
 }
 
 void sprite_batch::init()
@@ -19,45 +18,43 @@ void sprite_batch::init()
     create_vertex_array();
 }
 
-void sprite_batch::begin(glyph_sort_type sort_type)
+void sprite_batch::begin()
 {
-    _sort_type = sort_type;
     _render_batchs.clear();
-    for (size_t i = 0; i < _glyphs.size(); i++) {
-        delete _glyphs[i];
+    for (size_t i = 0; i < _sprite_datas.size(); i++) {
+        delete _sprite_datas[i];
     }
-    _glyphs.clear();
+    _sprite_datas.clear();
 }
 
 void sprite_batch::end()
 {
-    //sort_glypths();
     create_render_batchs();
 }
 
-void sprite_batch::draw(const glm::vec4& dest_rect, const glm::vec4& uv_rect, GLuint texture, float depth, const color& color)
+void sprite_batch::draw(const glm::vec4& dest_rect, const glm::vec4& uv_rect, GLuint texture, const color& color)
 {
-    glyph* new_glyphs = new glyph;
-    new_glyphs->texture = texture;
-    new_glyphs->depth = depth;
+    sprite_data* new_sprite_datas = new sprite_data;
+    new_sprite_datas->texture = texture;
+    new_sprite_datas->depth = 0.0f;
 
-    new_glyphs->top_left.col = color;
-    new_glyphs->top_left.set_position(dest_rect.x, dest_rect.y + dest_rect.w);
-    new_glyphs->top_left.set_uv(uv_rect.x, uv_rect.y + uv_rect.w);
+    new_sprite_datas->top_left.col = color;
+    new_sprite_datas->top_left.set_position(dest_rect.x, dest_rect.y + dest_rect.w);
+    new_sprite_datas->top_left.set_uv(uv_rect.x, uv_rect.y + uv_rect.w);
 
-    new_glyphs->bottom_left.col = color;
-    new_glyphs->bottom_left.set_position(dest_rect.x, dest_rect.y);
-    new_glyphs->bottom_left.set_uv(uv_rect.x, uv_rect.y);
+    new_sprite_datas->bottom_left.col = color;
+    new_sprite_datas->bottom_left.set_position(dest_rect.x, dest_rect.y);
+    new_sprite_datas->bottom_left.set_uv(uv_rect.x, uv_rect.y);
 
-    new_glyphs->bottom_right.col = color;
-    new_glyphs->bottom_right.set_position(dest_rect.x + dest_rect.z, dest_rect.y);
-    new_glyphs->bottom_right.set_uv(uv_rect.x + uv_rect.z, uv_rect.y);
+    new_sprite_datas->bottom_right.col = color;
+    new_sprite_datas->bottom_right.set_position(dest_rect.x + dest_rect.z, dest_rect.y);
+    new_sprite_datas->bottom_right.set_uv(uv_rect.x + uv_rect.z, uv_rect.y);
 
-    new_glyphs->top_right.col = color;
-    new_glyphs->top_right.set_position(dest_rect.x + dest_rect.z, dest_rect.y + dest_rect.w);
-    new_glyphs->top_right.set_uv(uv_rect.x + uv_rect.z, uv_rect.y + uv_rect.w);
+    new_sprite_datas->top_right.col = color;
+    new_sprite_datas->top_right.set_position(dest_rect.x + dest_rect.z, dest_rect.y + dest_rect.w);
+    new_sprite_datas->top_right.set_uv(uv_rect.x + uv_rect.z, uv_rect.y + uv_rect.w);
 
-    _glyphs.push_back(new_glyphs);
+    _sprite_datas.push_back(new_sprite_datas);
 }
 
 void sprite_batch::render_batch()
@@ -67,7 +64,7 @@ void sprite_batch::render_batch()
     for (size_t i = 0; i < _render_batchs.size(); i++) {
         glBindTexture(GL_TEXTURE_2D, _render_batchs[i].texture);
 
-        glDrawArrays(GL_TRIANGLES, _render_batchs[i].offset, _render_batchs[i].num_vertices);
+        glDrawArrays(GL_TRIANGLES, static_cast<GLint>(_render_batchs[i].offset), static_cast<GLsizei>(_render_batchs[i].num_vertices));
     }
 
     glBindVertexArray(0);
@@ -110,74 +107,44 @@ void sprite_batch::create_vertex_array()
 void sprite_batch::create_render_batchs()
 {
     std::vector<vertex> vertices;
-    vertices.resize(_glyphs.size() * 6);
+    vertices.resize(_sprite_datas.size() * 6);
 
-    if (_glyphs.empty()) {
+    if (_sprite_datas.empty()) {
         return;
     }
 
     unsigned long offset = 0;
     unsigned long cv = 0;
-    _render_batchs.emplace_back(offset, 6, _glyphs[0]->texture);
-    vertices[cv++] = _glyphs[0]->top_left;
-    vertices[cv++] = _glyphs[0]->bottom_left;
-    vertices[cv++] = _glyphs[0]->bottom_right;
-    vertices[cv++] = _glyphs[0]->bottom_right;
-    vertices[cv++] = _glyphs[0]->top_right;
-    vertices[cv++] = _glyphs[0]->top_left;
+    _render_batchs.emplace_back(offset, 6, _sprite_datas[0]->texture);
+    vertices[cv++] = _sprite_datas[0]->top_left;
+    vertices[cv++] = _sprite_datas[0]->bottom_left;
+    vertices[cv++] = _sprite_datas[0]->bottom_right;
+    vertices[cv++] = _sprite_datas[0]->bottom_right;
+    vertices[cv++] = _sprite_datas[0]->top_right;
+    vertices[cv++] = _sprite_datas[0]->top_left;
     offset += 6;
 
-    for (unsigned long cg = 1; cg < _glyphs.size(); cg++) {
-        if (_glyphs[cg]->texture != _glyphs[cg - 1]->texture) {
-            _render_batchs.emplace_back(offset, 6, _glyphs[cg]->texture);
+    for (unsigned long cg = 1; cg < _sprite_datas.size(); cg++) {
+        if (_sprite_datas[cg]->texture != _sprite_datas[cg - 1]->texture) {
+            _render_batchs.emplace_back(offset, 6, _sprite_datas[cg]->texture);
         } else {
             _render_batchs.back().num_vertices += 6;
         }
 
-        vertices[cv++] = _glyphs[cg]->top_left;
-        vertices[cv++] = _glyphs[cg]->bottom_left;
-        vertices[cv++] = _glyphs[cg]->bottom_right;
-        vertices[cv++] = _glyphs[cg]->bottom_right;
-        vertices[cv++] = _glyphs[cg]->top_right;
-        vertices[cv++] = _glyphs[cg]->top_left;
+        vertices[cv++] = _sprite_datas[cg]->top_left;
+        vertices[cv++] = _sprite_datas[cg]->bottom_left;
+        vertices[cv++] = _sprite_datas[cg]->bottom_right;
+        vertices[cv++] = _sprite_datas[cg]->bottom_right;
+        vertices[cv++] = _sprite_datas[cg]->top_right;
+        vertices[cv++] = _sprite_datas[cg]->top_left;
         offset += 6;
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertex), nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertices.size() * sizeof(vertex)), nullptr, GL_DYNAMIC_DRAW);
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(vertex), vertices.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<GLsizeiptr>(vertices.size() * sizeof(vertex)), vertices.data());
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void sprite_batch::sort_glypths()
-{
-    switch (_sort_type) {
-    case glyph_sort_type::BACK_TO_FRONT:
-        std::stable_sort(_glyphs.begin(), _glyphs.end(), compare_back_to_front);
-        break;
-    case glyph_sort_type::FRONT_TO_BACK:
-        std::stable_sort(_glyphs.begin(), _glyphs.end(), compare_front_to_back);
-        break;
-    case glyph_sort_type::TEXTURE:
-        std::stable_sort(_glyphs.begin(), _glyphs.end(), compare_texture);
-        break;
-    }
-}
-
-bool sprite_batch::compare_front_to_back(glyph* a, glyph* b)
-{
-    return (a->depth < b->depth);
-}
-
-bool sprite_batch::compare_back_to_front(glyph* a, glyph* b)
-{
-    return (a->depth > b->depth);
-}
-
-bool sprite_batch::compare_texture(glyph* a, glyph* b)
-{
-    return (a->texture < b->texture);
 }

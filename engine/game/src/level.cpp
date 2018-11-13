@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <algorithm>
 
+
 level::level(const std::string& file_name)
 {
     std::ifstream file;
@@ -38,16 +39,19 @@ level::level(const std::string& file_name)
 
             switch (tile) {
             case 'R':
-                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/floor.png").id, 0.0f, col);
+                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/floor.png").id, col);
+                _level_walls.insert(std::pair<size_t, size_t>(j , i));
                 break;
             case 'L':
-                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/floor_water.png").id, 0.0f, col);
+                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/floor_water.png").id, col);
+                _level_walls.insert(std::pair<size_t, size_t>(j , i));
                 break;
             case '.':
-                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/acid.png").id, 0.0f, col);
+                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/acid.png").id, col);
                 break;
             case '@':
-                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/acid.png").id, 0.0f, col);
+                _sprite_batch.draw(destRect, uvRect, resource_manager::get_texture("resources/acid.png").id, col);
+                _level_data[i][j] = '.';
                 _start_player_pos.x = static_cast<int>(j * TILE_WIDTH);
                 _start_player_pos.y = static_cast<int>(i * TILE_WIDTH);
                 break;
@@ -73,4 +77,9 @@ glm::vec2 level::get_start_player_pos() const
 std::vector<std::string> level::get_level_data() const
 {
     return _level_data;
+}
+
+std::map<size_t, size_t> level::getLevel_walls() const
+{
+    return _level_walls;
 }

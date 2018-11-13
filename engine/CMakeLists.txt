@@ -7,11 +7,12 @@ find_library(SDL2_MIXER NAMES SDL2_mixer)
 
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS})
 
-file(GLOB SOME_PARAM "engine/src/*.cpp" "engine/src/graphics/*.cpp" "game/src/*.cpp")
+file(GLOB SOME_PARAM "*.cpp" "engine/src/*.cpp" "engine/src/graphics/*.cpp" "game/src/*.cpp")
 
-add_executable(${PROJECT_NAME} "main.cpp" "game.cpp" ${SOME_PARAM})
+add_executable(${PROJECT_NAME} ${SOME_PARAM})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/engine/include/
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/
+                                                  ${CMAKE_SOURCE_DIR}/engine/include/
                                                   ${CMAKE_SOURCE_DIR}/engine/include/graphics
                                                   ${CMAKE_SOURCE_DIR}/game/include
                                                   )
@@ -26,6 +27,7 @@ if (MINGW)
                -lopengl32               
                -lGL
                -lGLEW
+               ${SDL2_MIXER}
                )
 elseif(UNIX)
     target_link_libraries(${PROJECT_NAME}

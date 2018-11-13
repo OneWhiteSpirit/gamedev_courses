@@ -4,9 +4,7 @@
 
 int main()
 {
-
-    game game;
-    game.start();
+    game::instance().start();
 
     return EXIT_SUCCESS;
 }

@@ -6,14 +6,7 @@
 
 typedef unsigned int GLuint;
 
-enum class glyph_sort_type {
-    NONE,
-    FRONT_TO_BACK,
-    BACK_TO_FRONT,
-    TEXTURE
-};
-
-struct glyph {
+struct sprite_data {
     GLuint texture;
     float depth;
 
@@ -36,28 +29,6 @@ public:
     GLuint texture;
 };
 
-//class sprite_data {
-//public:
-//    sprite_data() {}
-//    sprite_data(int frame_count, double frame_duration, int left, int bottom, int width, int height, bool loop, std::string atlas)
-//        : frameCount(frame_count)
-//        , frameDuration(frame_duration)
-//        , left(left)
-//        , bottom(bottom)
-//        , width(width)
-//        , height(height)
-//        , shouldLoop(loop)
-//        , atlas(atlas)
-//    {
-//    }
-//    int frameCount;
-//    double frameDuration;
-//    int left, bottom, width, height;
-//    bool shouldLoop;
-//    std::string atlas;
-//    GLuint texture;
-//};
-
 class sprite_batch {
 public:
     sprite_batch();
@@ -65,25 +36,19 @@ public:
 
     void init();
 
-    void begin(glyph_sort_type sort_type = glyph_sort_type::TEXTURE);
+    void begin();
     void end();
 
-    void draw(const glm::vec4& dest_rect, const glm::vec4& uv_rect, GLuint texture, float depth, const color& color);
+    void draw(const glm::vec4& dest_rect, const glm::vec4& uv_rect, GLuint texture, const color& color);
 
     void render_batch();
 
 private:
     GLuint _vbo;
-    GLuint _vao;
-    glyph_sort_type _sort_type;
-    std::vector<glyph*> _glyphs;
+    GLuint _vao;    
+    std::vector<sprite_data*> _sprite_datas;
     std::vector<renderbatch> _render_batchs;
 
     void create_vertex_array();
-    void create_render_batchs();
-    void sort_glypths();
-
-    static bool compare_front_to_back(glyph* a, glyph* b);
-    static bool compare_back_to_front(glyph* a, glyph* b);
-    static bool compare_texture(glyph* a, glyph* b);
+    void create_render_batchs();        
 };

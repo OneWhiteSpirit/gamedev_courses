@@ -1,6 +1,5 @@
 #include "game_object.hpp"
 #include "level.hpp"
-#include "resource_manager.hpp"
 
 game_object::game_object()
 {
@@ -10,7 +9,7 @@ game_object::~game_object()
 {
 }
 
-void game_object::collision_with_level(const std::vector<std::string>& level_data)
+bool game_object::collision_with_level(const std::vector<std::string>& level_data)
 {
     std::vector<glm::vec2> collision_to_tile_position;
 
@@ -22,26 +21,33 @@ void game_object::collision_with_level(const std::vector<std::string>& level_dat
 
     check_tile_pos(level_data, collision_to_tile_position, _position.x + OBJECT_WIDTH, _position.y + OBJECT_WIDTH);
 
+    // no blocks collided
+    if (collision_to_tile_position.size() == 0) {
+        return false;
+    }
+
     for (size_t i = 0; i < collision_to_tile_position.size(); i++) {
         collide_with_tile(collision_to_tile_position[i]);
     }
+
+    return true;
 }
 
-void game_object::draw(sprite_batch& sprite_batch)
+void game_object::bullets_collision_with_level(const std::vector<std::string>& level_data, float x, float y)
 {
-    static GLuint texture_id0 = resource_manager::get_texture("resources/floor.png").id;
-    static GLuint texture_id1 = resource_manager::get_texture("resources/floor_water.png").id;
+    std::vector<glm::vec2> collision_to_tile_position;
 
-    const glm::vec4 uv_rect(0.0f, 0.0f, 1.0f, 1.0f);
+    check_tile_pos(level_data, collision_to_tile_position, x, y);
 
-    glm::vec4 dest_rect;
-    dest_rect.x = _position.x;
-    dest_rect.y = _position.y;
-    dest_rect.z = OBJECT_WIDTH;
-    dest_rect.w = OBJECT_WIDTH;
+    check_tile_pos(level_data, collision_to_tile_position, x + OBJECT_WIDTH / 4.0f, y);
 
-    sprite_batch.draw(dest_rect, uv_rect, texture_id0, 0.0f, _color);
-    sprite_batch.draw(dest_rect, uv_rect, texture_id1, 0.0f, _color);
+    check_tile_pos(level_data, collision_to_tile_position, x, y + OBJECT_WIDTH / 4.0f);
+
+    check_tile_pos(level_data, collision_to_tile_position, x + OBJECT_WIDTH / 4.0f, y + OBJECT_WIDTH / 4.0f);
+
+    for (size_t i = 0; i < collision_to_tile_position.size(); i++) {
+        collide_with_tile(collision_to_tile_position[i]);
+    }
 }
 
 void game_object::check_tile_pos(const std::vector<std::string>& level_data, std::vector<glm::vec2>& collision_tile_pos, float x, float y)
@@ -72,12 +78,10 @@ void game_object::collide_with_tile(glm::vec2 tile_pos)
         } else {
             _position.x += x_depth;
         }
-    }
-    else
-    {
-        if(dist_vec.y < 0) {
+    } else {
+        if (dist_vec.y < 0) {
             _position.y -= y_depth;
-        }else {
+        } else {
             _position.y += y_depth;
         }
     }
