@@ -1,52 +1,56 @@
 #include "player.hpp"
+#include "enemy.hpp"
 #include "game.hpp"
-#include "game_object.hpp"
 #include "resource_manager.hpp"
 #include <SDL2/SDL_keycode.h>
 
 player::~player()
 {
+    delete bullets_;
 }
 
 void player::init(float speed, glm::vec2 pos, input_manager* input_manager)
 {
     _speed = speed;
     _position = pos;
+    _health = 50.0f;
     _color.set_color(255, 255, 255, 255);
     _input_manager = input_manager;
     set_direction(direction_up);
     can_shoot = true;
     _bullet_speed = 10;
-    bullets_in_screen = 0;
-    max_bullets_in_screen = 10;
+    bullets_ = new bullets;
 }
 
 void player::update(const std::vector<std::string>& level_data, float delta_time)
 {
-    if (_input_manager->is_key_pressed(SDLK_w)) {
+    if (_input_manager->is_key_down(keys::up)) {
         set_direction(direction_up);
         _position.y += _speed;
         game::instance().get_audio()->play_chunk(SOUND_ONMOVE);
-    } else if (_input_manager->is_key_pressed(SDLK_s)) {
+    } else if (_input_manager->is_key_down(keys::down)) {
         set_direction(direction_down);
         _position.y -= _speed;
         game::instance().get_audio()->play_chunk(SOUND_ONMOVE);
-    } else if (_input_manager->is_key_pressed(SDLK_a)) {
+    } else if (_input_manager->is_key_down(keys::left)) {
         set_direction(direction_left);
         _position.x -= _speed;
         game::instance().get_audio()->play_chunk(SOUND_ONMOVE);
-    } else if (_input_manager->is_key_pressed(SDLK_d)) {
+    } else if (_input_manager->is_key_down(keys::right)) {
         set_direction(direction_right);
         _position.x += _speed;
         game::instance().get_audio()->play_chunk(SOUND_ONMOVE);
-    } else if (_input_manager->is_key_pressed(SDLK_SPACE)) {
-        //if (can_shoot) {
-        game::instance().get_audio()->play_chunk(SOUND_FIRE);
-        game::instance().get_player()->shoot();
-        //}
+    } else if (_input_manager->is_key_down(keys::space)) {
+        if (can_shoot) {
+            game::instance().get_audio()->play_chunk(SOUND_FIRE);
+            game::instance().get_player()->shoot();
+        }
     } else {
         game::instance().get_audio()->stop_chunk(SOUND_ONMOVE);
+        can_shoot = true;
     }
+
+    bullets_->update_pos(delta_time);
 
     collision_with_level(level_data);
 }
@@ -75,15 +79,17 @@ void player::draw()
         game::instance().get_sprite_batch()->draw(dest_rect, uv_rect, resource_manager::get_texture("resources/tank_sprites/down1.png").id, _color);
         break;
     }
+
+    bullets_->draw();
 }
 
 void player::shoot()
 {
-    //    if (can_shoot) {
-    game::instance().get_bullets()->create_bullet(_position.x, _position.y, _direction, PLAYER, 1, _bullet_speed);
-    //        ++bullets_in_screen;
-    //        if (bullets_in_screen >= max_bullets_in_screen) {
-    //            can_shoot = false;
-    //        }
-    //    }
+    bullets_->create_bullet(_position.x, _position.y, _direction, PLAYER, 1, _bullet_speed);
+    can_shoot = false;    
+}
+
+bullets* player::get_bullets() const
+{
+    return bullets_;
 }

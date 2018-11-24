@@ -6,10 +6,16 @@ find_library(SDL2_LIB NAMES SDL2)
 
 include_directories(${SDL2_INCLUDE_DIRS})
 
+
+
 add_executable(${PROJECT_NAME} "src/main.cpp" "src/graphics/window.cpp"
                                "src/graphics/render.cpp" "include/graphics/window.hpp"
                                "include/graphics/render.hpp" "include/math_2d/math_2d.hpp"
                                "include/graphics/stb_image.h")
+
+if(WIN32)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE "-DOM_DECLSPEC=__declspec(dllexport)")
+endif(WIN32)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/graphics
                                                   ${CMAKE_SOURCE_DIR}/include/math_2d)
@@ -21,6 +27,7 @@ if (MINGW)
                -lSDL2
                -mwindows
                -lopengl32
+               -lglew32
                )
 elseif(UNIX)
     target_link_libraries(${PROJECT_NAME}

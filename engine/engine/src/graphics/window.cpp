@@ -8,7 +8,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
-
 namespace one_dc {
 
 using std::cerr;
@@ -21,6 +20,10 @@ namespace graphics {
 
     window::~window()
     {
+        // TODO uninitialize ImGui
+        ImGui_ImplSdlGL3_Shutdown();
+
+        SDL_GL_DeleteContext(gl_context);
         SDL_DestroyWindow(_sdl_window);
         SDL_Quit();
     }
@@ -84,6 +87,19 @@ namespace graphics {
             cerr << "Failed to initialize GLEW: " << err_message << endl;
             return false;
         }
+        ONE_DC_GL_CHECK();
+
+        // Setup Dear ImGui context
+        ImGui::CreateContext();
+        ONE_DC_GL_CHECK();
+
+        if (!ImGui_ImplSdlGL3_Init(_sdl_window)) {
+            std::cout << "can't initialize ImGui" << std::endl;
+            throw std::runtime_error("failed initialize ImGui");
+        }
+
+        // Setup Style
+        ImGui::StyleColorsDark();
         ONE_DC_GL_CHECK();
 
         std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;

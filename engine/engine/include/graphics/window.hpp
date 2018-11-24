@@ -1,5 +1,8 @@
 #pragma once
+
 #include "render.hpp"
+#include "imgui.h"
+#include "imgui_impl_sdl_gl3.h"
 
 typedef __SIZE_TYPE__ size_t;
 struct SDL_Window;

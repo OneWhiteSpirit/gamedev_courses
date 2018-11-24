@@ -1,7 +1,7 @@
 #pragma once
 
+#include "glm/glm.hpp"
 #include "vertex.hpp"
-#include <glm/glm.hpp>
 #include <vector>
 
 typedef unsigned int GLuint;
@@ -45,10 +45,10 @@ public:
 
 private:
     GLuint _vbo;
-    GLuint _vao;    
+    GLuint _vao;
     std::vector<sprite_data*> _sprite_datas;
     std::vector<renderbatch> _render_batchs;
 
     void create_vertex_array();
-    void create_render_batchs();        
+    void create_render_batchs();
 };

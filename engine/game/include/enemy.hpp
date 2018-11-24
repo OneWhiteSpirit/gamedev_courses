@@ -1,7 +1,6 @@
 #pragma once
 
 #include "game_object.hpp"
-#include "types.hpp"
 
 class enemy : public game_object {
 public:
@@ -12,11 +11,13 @@ public:
 
     void update(const std::vector<std::string>& level_data, float delta_time);
 
-    void set_direction(direction dir) { _direction = dir; }
-
     void draw();
 
 private:
+    unsigned int shoot_counter;
     int _frames;
-    direction _direction;
+
+    void set_direction(direction dir) { _direction = dir; }
+    void shoot();
+    glm::vec2 get_nearest_player(glm::vec2 player_pos);
 };

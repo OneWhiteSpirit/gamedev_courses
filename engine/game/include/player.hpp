@@ -1,9 +1,9 @@
 #pragma once
 
 #include "audio.hpp"
+#include "bullets.hpp"
 #include "game_object.hpp"
 #include "input_manager.hpp"
-#include "types.hpp"
 
 class player : public game_object {
 public:
@@ -19,11 +19,14 @@ public:
 
     void set_direction(direction dir) { _direction = dir; }
 
-private:    
+    float get_player_health() { return _health; }
+
+    bullets* get_bullets() const;
+
+private:
     bool can_shoot;
     int _bullet_speed;
-    int bullets_in_screen;
-    int max_bullets_in_screen;
-    direction _direction;
+
     input_manager* _input_manager;
+    bullets* bullets_;
 };

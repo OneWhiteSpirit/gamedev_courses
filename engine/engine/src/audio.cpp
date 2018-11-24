@@ -25,12 +25,12 @@ void audio::init()
     Mix_Volume(5, MIX_MAX_VOLUME / 2);
     Mix_Volume(6, MIX_MAX_VOLUME / 2);
 
-    on_move_.s = Mix_LoadWAV_RW(SDL_RWFromFile("sounds/background.ogg", "rb"), 1);
-    fire_.s = Mix_LoadWAV_RW(SDL_RWFromFile("sounds/fire.ogg", "rb"), 1);
-    explosion_.s = Mix_LoadWAV_RW(SDL_RWFromFile("sounds/explosion.ogg", "rb"), 1);
-    bonus_.s = Mix_LoadWAV_RW(SDL_RWFromFile("sounds/bonus.ogg", "rb"), 1);
-    game_start_.s = Mix_LoadWAV_RW(SDL_RWFromFile("sounds/gamestart.ogg", "rb"), 1);
-    game_over_.s = Mix_LoadWAV_RW(SDL_RWFromFile("sounds/gameover.ogg", "rb"), 1);
+    on_move_.s = Mix_LoadWAV_RW(SDL_RWFromFile("resources/sounds/background.ogg", "rb"), 1);
+    fire_.s = Mix_LoadWAV_RW(SDL_RWFromFile("resources/sounds/fire.ogg", "rb"), 1);
+    explosion_.s = Mix_LoadWAV_RW(SDL_RWFromFile("resources/sounds/explosion.ogg", "rb"), 1);
+    bonus_.s = Mix_LoadWAV_RW(SDL_RWFromFile("resources/sounds/bonus.ogg", "rb"), 1);
+    game_start_.s = Mix_LoadWAV_RW(SDL_RWFromFile("resources/sounds/gamestart.ogg", "rb"), 1);
+    game_over_.s = Mix_LoadWAV_RW(SDL_RWFromFile("resources/sounds/gameover.ogg", "rb"), 1);
 
     if (on_move_.s == nullptr || fire_.s == nullptr || explosion_.s == nullptr || bonus_.s == nullptr || game_start_.s == nullptr || game_over_.s == nullptr) {
         throw std::runtime_error("- Cant't load audio\n");

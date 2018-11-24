@@ -5,8 +5,8 @@
 void bullets::update_pos(float dt)
 {
     for (size_t i = 0; i < bullets_.size();) {
-        bullets_[i].x = bullets_[i].x + bullets_[i].xv * dt;
-        bullets_[i].y = bullets_[i].y + bullets_[i].yv * dt;
+        bullets_[i].x = bullets_[i].x + bullets_[i].xv * default_speed_ * dt;
+        bullets_[i].y = bullets_[i].y + bullets_[i].yv * default_speed_ * dt;
 
         if (collide_with_wall(game::instance().get_current_level_data(), bullets_[i].x, bullets_[i].y)) {
             bullets_[i] = bullets_.back();
@@ -30,6 +30,16 @@ bool bullets::collide_with_wall(const std::vector<std::string>& levelData, float
     }
 
     return levelData[static_cast<unsigned long>(gridPosition.y)][static_cast<unsigned long>(gridPosition.x)] != '.';
+}
+
+bool bullets::collide_with_game_object(size_t index, game_object* current_game_object)
+{
+    return ((OBJECT_RADIUS + OBJECT_WIDTH / 4.0f) - glm::length(glm::vec2(bullets_[index].x, bullets_[index].y) - (current_game_object->get_position() + glm::vec2(OBJECT_RADIUS))) > 0);
+}
+
+void bullets::set_bullets(std::vector<bullet> bullets)
+{
+    bullets_ = bullets;
 }
 
 void bullets::draw()
@@ -70,30 +80,35 @@ void bullets::create_bullet(float x, float y, direction dir, character_type owne
 
     switch (dir) {
     case direction_up:
-        tempBullet.x = x + (24 / static_cast<float>(OBJECT_WIDTH));
-        tempBullet.y = y + (64 / static_cast<float>(OBJECT_WIDTH));
+        tempBullet.x = x + (36 / static_cast<float>(OBJECT_WIDTH));
+        tempBullet.y = y + (72 / static_cast<float>(OBJECT_WIDTH));
         tempBullet.xv = 0.0;
         tempBullet.yv = bullet_speed;
         break;
     case direction_down:
-        tempBullet.x = x + (24 / static_cast<float>(OBJECT_WIDTH));
+        tempBullet.x = x + (36 / static_cast<float>(OBJECT_WIDTH));
         tempBullet.y = y - (16 / static_cast<float>(OBJECT_WIDTH));
         tempBullet.xv = 0.0;
         tempBullet.yv = -bullet_speed;
         break;
     case direction_left:
         tempBullet.x = x - (16 / static_cast<float>(OBJECT_WIDTH));
-        tempBullet.y = y + (24 / static_cast<float>(OBJECT_WIDTH));
+        tempBullet.y = y + (36 / static_cast<float>(OBJECT_WIDTH));
         tempBullet.xv = -bullet_speed;
         tempBullet.yv = 0.0;
         break;
     case direction_right:
-        tempBullet.x = x + (64 / static_cast<float>(OBJECT_WIDTH));
-        tempBullet.y = y + (24 / static_cast<float>(OBJECT_WIDTH));
+        tempBullet.x = x + (72 / static_cast<float>(OBJECT_WIDTH));
+        tempBullet.y = y + (36 / static_cast<float>(OBJECT_WIDTH));
         tempBullet.xv = bullet_speed;
         tempBullet.yv = 0.0;
         break;
     }
 
     bullets_.insert(bullets_.end(), tempBullet);
+}
+
+float bullets::get_damage() const
+{
+    return damage_;
 }

@@ -2,11 +2,11 @@
 #include <string>
 #include <string_view>
 
-namespace my_engine_ns
-{
+namespace my_engine_ns {
+
+struct triangel;
 /// dendy gamepad emulation events
-enum class event
-{
+enum class event {
     /// input events
     left_pressed,
 
@@ -36,8 +36,7 @@ class engine;
 engine* create_engine();
 void destroy_engine(engine* e);
 
-class engine
-{
+class engine {
 public:
     virtual ~engine();
     /// create main window
@@ -46,9 +45,9 @@ public:
     /// pool event from input queue
     /// return true if event was written
     virtual bool read_input(event& e) = 0;
-    virtual swap_buffers() = 0;
-    virtual render_triangel(const triangel) = 0;
-    virtual void uninitialize()       = 0;
+    virtual void swap_buffers() = 0;
+    virtual void render_triangel(const triangel) = 0;
+    virtual void uninitialize() = 0;
 };
 
 } // end namespace my_engine_ns

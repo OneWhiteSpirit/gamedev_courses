@@ -54,14 +54,39 @@ void game_object::check_tile_pos(const std::vector<std::string>& level_data, std
 {
     glm::vec2 corner_pos = glm::vec2(floorf(x / static_cast<float>(TILE_WIDTH)), floorf(y / static_cast<float>(TILE_WIDTH)));
 
-    if (level_data[corner_pos.y][corner_pos.x] != '.') {
+    if (level_data[static_cast<unsigned long>(corner_pos.y)][static_cast<unsigned long>(corner_pos.x)] != '.') {
         collision_tile_pos.push_back(corner_pos * static_cast<float>(TILE_WIDTH) + glm::vec2(static_cast<float>(TILE_WIDTH) / 2.0f));
     }
 }
 
+bool game_object::collide_with_game_object(game_object* agent)
+{
+    glm::vec2 centerPosA = _position + glm::vec2(OBJECT_RADIUS);
+    glm::vec2 centerPosB = agent->get_position() + glm::vec2(OBJECT_RADIUS);
+
+    glm::vec2 distVec = centerPosA - centerPosB;
+
+    float distance = glm::length(distVec);
+    float depth = OBJECT_WIDTH - distance;
+
+    if (depth > 0) {
+        glm::vec2 collisionDepthVec = (glm::normalize(distVec) * depth) / 2.0f;
+
+        _position += collisionDepthVec;
+        agent->_position -= collisionDepthVec;
+        return true;
+    }
+    return false;
+}
+
+bool game_object::apply_damage(float damage)
+{
+    _health -= damage;
+    return (_health <= 0);
+}
+
 void game_object::collide_with_tile(glm::vec2 tile_pos)
 {
-    const float OBJECT_RADIUS = static_cast<float>(OBJECT_WIDTH) / 2.0f;
     const float TILE_RADIUS = static_cast<float>(TILE_WIDTH) / 2.0f;
     const float MIN_DISTANCE = OBJECT_RADIUS + TILE_RADIUS;
 

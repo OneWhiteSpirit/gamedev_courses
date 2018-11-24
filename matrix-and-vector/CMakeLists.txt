@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.9)
 project(matrix-and-vector)
 
 find_library(SDL2_LIB NAMES SDL2)
-find_package(glm REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIRS})
 
@@ -12,7 +11,8 @@ add_executable(${PROJECT_NAME} "src/main.cpp" "src/graphics/window.cpp"
                                "include/graphics/render.hpp" "include/math_2d/math_2d.hpp"
                                "include/graphics/stb_image.h")
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/graphics
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/
+                                                  ${CMAKE_SOURCE_DIR}/include/graphics
                                                   ${CMAKE_SOURCE_DIR}/include/math_2d)
 
 if (MINGW)
@@ -21,14 +21,14 @@ if (MINGW)
                -lSDL2main
                -lSDL2
                -mwindows
-               -lopengl32
+               -lopengl32               
+               -lglew32
                )
 elseif(UNIX)
     target_link_libraries(${PROJECT_NAME}
                -lSDL2
                -lGL
                -lGLEW
-               ${glm}
                )
 endif()
 

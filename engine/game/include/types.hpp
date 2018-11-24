@@ -9,5 +9,6 @@ enum direction {
 
 enum character_type {
     PLAYER = 0,
-    ENEMY = 1
+    ENEMY = 1,
+    none = 2
 };

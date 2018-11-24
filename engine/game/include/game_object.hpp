@@ -1,12 +1,14 @@
 #pragma once
 
+#include "glm/vec2.hpp"
 #include "sprite_batch.hpp"
-#include <glm/vec2.hpp>
+#include "types.hpp"
 #include <string>
 
 class enemy;
 
-const int OBJECT_WIDTH = 8;
+const int OBJECT_WIDTH = 10;
+const float OBJECT_RADIUS = static_cast<float>(OBJECT_WIDTH) / 2.0f;
 
 class game_object {
 public:
@@ -17,6 +19,8 @@ public:
 
     bool collision_with_level(const std::vector<std::string>& level_data);
     void bullets_collision_with_level(const std::vector<std::string>& level_data, float x, float y);
+    bool collide_with_game_object(game_object* agent);
+    bool apply_damage(float damage);
 
     virtual void draw() = 0;
 
@@ -25,6 +29,7 @@ public:
 protected:
     glm::vec2 _position;
     glm::vec2 _dir;
+    direction _direction;
     float _speed;
     color _color;
     float _health;

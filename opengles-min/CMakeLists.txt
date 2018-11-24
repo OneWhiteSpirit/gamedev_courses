@@ -16,7 +16,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/)
 
 
 if (MINGW)
-    target_link_libraries(engine-opengles
+    target_link_libraries(opengles-min
                -lmingw32
                -lSDL2main
                -lSDL2

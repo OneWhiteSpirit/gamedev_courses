@@ -1,10 +1,9 @@
 #pragma once
 
-#include <glm/vec2.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/vec2.hpp"
 
-class camera2d
-{
+class camera2d {
 public:
     camera2d();
     ~camera2d();
